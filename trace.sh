@@ -13,4 +13,4 @@ trace=~/laser/trace
 $vcf2geno --inVcf $refpref.vcf --out $refpref
 $vcf2geno --inVcf $stupref.vcf --out $stupref
 $trace -s $stupref.geno -g $refpref.geno -o $outpref -k $k -K $K
-# TODO: take care of reference alleles
+rm -f trace.conf
