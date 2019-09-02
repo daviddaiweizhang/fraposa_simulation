@@ -3,8 +3,15 @@ set -e
 
 inpref=$1
 nstu=$2
+seed=123
 
-cat $inpref.fam | sort -R > tmp
+get_seeded_random()
+{
+    seed="$1"
+    openssl enc -aes-256-ctr -pass pass:"$seed" -nosalt </dev/zero 2>/dev/null
+}
+
+cat $inpref.fam | shuf --random-source=<(get_seeded_random $seed) > tmp
 cat tmp | head -n $nstu > tmp_stu
 plink --bfile $inpref --keep-allele-order --keep tmp_stu --make-bed --out ${inpref}_stu
 plink --bfile $inpref --keep-allele-order --remove tmp_stu --make-bed --out ${inpref}_ref
