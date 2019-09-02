@@ -3,6 +3,8 @@ set -e
 
 ref=$1
 stu=$2
+method=$3
+out=$4
 
 fraposa="python $HOME/fraposa/fraposa_runner.py"
-$fraposa --method oadp --dim_ref 2 --dim_stu 8 $ref $stu
+$fraposa --method $method --dim_ref 2 --dim_stu 8 $ref $stu --out $out
