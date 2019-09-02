@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-npercenter=$1
+n=$1
 nstu=$2
 K=8
 k=2
-pref=data/c${npercenter}/a
+pref=data/c${n}/a
 mkdir -p `dirname $pref`
 
-bash ggs.sh $npercenter $pref.ggs
+bash ggs.sh $n $pref.ggs
 bash ggs2plink.sh $pref.ggs $pref
 bash splitrefstu.sh $pref $nstu
 bash trace.sh ${pref}_ref ${pref}_stu $K $k $pref
