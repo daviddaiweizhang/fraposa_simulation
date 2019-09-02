@@ -10,7 +10,9 @@ cat $infile | tail -n +2 | cut -f1 | sed 's/,/_/' | sed 's/^/1\t/' | sed 's/$/\t
 paste ${outpref}_tmp_leader ${outpref}_tmp | sed 's/\t/ /g' > $outpref.tped
 
 echo 'producing .tfam file...'
-cat $infile | head -n 1 | cut -f2- | sed 's/\//_/g' | sed 's/\t/\n/g' | awk 'NR % 2 == 1' | awk '{ print $1 " " $1 }' | sed 's/$/ 0 0 1 1/' | head -n -1 > $outpref.tfam
+cat $infile | head -n 1 | cut -f2- | sed 's/\//_/g' | sed 's/\t/\n/g' | awk 'NR % 2 == 1' > ${outpref}_tmp_iid
+cat ${outpref}_tmp_iid | cut -d'_' -f1,2 > ${outpref}_tmp_fid
+paste ${outpref}_tmp_fid ${outpref}_tmp_iid | sed 's/$/ 0 0 1 1/' | head -n -1 > $outpref.tfam
 
 plink --tfile $outpref --make-bed --out $outpref
 
