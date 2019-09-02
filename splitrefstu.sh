@@ -12,7 +12,10 @@ get_seeded_random()
 }
 
 cat $inpref.fam | shuf --random-source=<(get_seeded_random $seed) > ${inpref}_tmp
-cat ${inpref}_tmp | head -n $nstu > ${inpref}_tmp_stu
+rm -f ${inpref}_tmp_stu
+for popu in `cat ${inpref}_tmp | cut -d' ' -f1 | sort | uniq`; do
+    cat ${inpref}_tmp | awk -F' ' -v popu="$popu" '$1 == popu' | head -n $nstu >> ${inpref}_tmp_stu
+done
 plink --bfile $inpref --keep-allele-order --keep ${inpref}_tmp_stu --make-bed --out ${inpref}_stu
 plink --bfile $inpref --keep-allele-order --remove ${inpref}_tmp_stu --make-bed --out ${inpref}_ref
 plink --bfile ${inpref}_stu --keep-allele-order --recode vcf-iid --out ${inpref}_stu
