@@ -2,7 +2,7 @@
 set -e
 
 npercenter=$1
-nstu=200
+nstu=$2
 K=8
 k=2
 pref=data/c${npercenter}/a
