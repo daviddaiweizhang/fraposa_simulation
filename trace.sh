@@ -19,6 +19,10 @@ $vcf2geno --inVcf $refpref.vcf --out $refpref --updateID ${outpref}_tmp
 awk '{ print $1 "_" $2 "\t" $1 "\t" $2 }' $stupref.fam > ${outpref}_tmp 
 $vcf2geno --inVcf $stupref.vcf --out $stupref --updateID ${outpref}_tmp 
 
+# convert ref pcs to coord file
+n_pcs=`head -n1 $coordpref.pcs | cut -f3- | wc -w`
+cat <( echo -e 'popID\nindivID' ) <( seq 1 $n_pcs | sed 's/^/PC/' ) | tr '\n' '\t' | sed 's/.$/\n/' | cat - $coordpref.pcs > $coordpref.coord
+
 # run trace
 $trace -s $stupref.geno -g $refpref.geno -o $outpref -k $k -K $K -c $coordpref.coord
 cat $outpref.ProPC.coord | tail -n +2 | cut -f1,2,7- > ${outpref}.pcs
