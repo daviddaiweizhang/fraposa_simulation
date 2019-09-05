@@ -16,15 +16,6 @@ colnames(x.ref) = c("popu", "id", "PC1", "PC2")
 c.ref = aggregate(x.ref[,c("PC1", "PC2")], by = list(x.ref$popu), FUN = mean)
 colnames(c.ref) = c("popu", "C1", "C2")
 
-# # adjust for ref pcs sign difference
-# x.ref2 = read.table(paste0(inpref, "_reftrace.pcs"))
-# reflect = sign(x.ref2[1,] / x.ref[1,c("PC1", "PC2")])
-# # colnames(x.ref2) = c("PC1", "PC2")
-# # c.ref2 = aggregate(x.ref2[,c("PC1", "PC2")], by = list(x.ref$popu), FUN = mean)
-# # colnames(c.ref2) = c("popu", "C1", "C2")
-# # reflect = sign(c.ref2[,c("C1", "C2")] / c.ref[,c("C1", "C2")])
-# reflect = c(as.matrix(reflect))
-
 # rotate the samples
 basis = c.ref[1:2, 2:3]
 basis = basis / sqrt(rowSums(basis^2))
@@ -65,18 +56,11 @@ for(method in methods){
     x.stu = x.stu.all[[method]]
     # x.stu = x.stu[order(x.stu$popu),]
 
-    # # adjust for sign flipping
-    # if(method == 'adp'){
-    #     # reflect = sign(c.stu[1, c("C1", "C2")] / c.ref[1, c("C1", "C2")])
-    #     # reflect = c(as.matrix(reflect))
-    #     x.stu[,c("PC1", "PC2")] = x.stu[,c("PC1", "PC2")] * rep(reflect, each=nrow(x.stu))
-    # }
-
     x.stu[,c("PC1", "PC2")] = as.matrix(x.stu[,c("PC1", "PC2")]) %*% rot
     c.stu = aggregate(x.stu[,c("PC1", "PC2")], by = list(x.stu$popu), FUN = mean)
     colnames(c.stu) = c("popu", "C1", "C2")
     stu.pch = 14
-    main = paste(method, nrow(x.ref))
+    main = paste0(method, ' (ref. size = ', nrow(x.ref), ')')
     col.ref = as.integer(x.ref$popu) + 1
     plot(x.ref[,3:4], main=main, col=col.ref, xlim=lim, ylim=lim)
 
