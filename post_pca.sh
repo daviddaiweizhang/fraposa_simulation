@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+nstu=50
 msd=data/msd
 rm -f $msd
 for m in `seq 1000 500 3000`; do
