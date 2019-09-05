@@ -18,7 +18,5 @@ for popu in `cat ${inpref}_tmp | cut -d' ' -f1 | sort | uniq`; do
 done
 plink --bfile $inpref --keep-allele-order --keep ${inpref}_tmp_stu --make-bed --out ${inpref}_stu
 plink --bfile $inpref --keep-allele-order --remove ${inpref}_tmp_stu --make-bed --out ${inpref}_ref
-plink --bfile ${inpref}_stu --keep-allele-order --recode vcf-iid --out ${inpref}_stu
-plink --bfile ${inpref}_ref --keep-allele-order --recode vcf-iid --out ${inpref}_ref
 
 rm ${inpref}_tmp ${inpref}_tmp_stu
