@@ -14,5 +14,5 @@ bash splitrefstu.sh $pref $nstu
 bash fraposa.sh ${pref}_ref ${pref}_stu oadp ${pref}_oadp
 bash fraposa.sh ${pref}_ref ${pref}_stu ap ${pref}_ap
 bash fraposa.sh ${pref}_ref ${pref}_stu sp ${pref}_sp
-bash trace.sh ${pref}_ref ${pref}_stu $K $k $pref ${pref}_ref
+bash trace.sh ${pref}_ref ${pref}_stu $K $k ${pref}_adp ${pref}_ref
 Rscript plot_pcs.R $pref
