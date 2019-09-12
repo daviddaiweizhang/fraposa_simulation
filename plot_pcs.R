@@ -7,7 +7,7 @@ lim = c(-35, 35)
 
 # read reference samples
 args = commandArgs(trailingOnly=TRUE)
-inpref = ifelse(length(args) >= 1, args[1], "data/c300/a")
+inpref = ifelse(length(args) >= 1, args[1], "data/n300s50/a")
 x.ref = read.table(paste0(inpref, "_ref.pcs"))
 colnames(x.ref) = c("popu", "id", "PC1", "PC2")
 # x.ref = x.ref[order(x.ref$popu),]
