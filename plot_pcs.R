@@ -10,7 +10,6 @@ args = commandArgs(trailingOnly=TRUE)
 inpref = ifelse(length(args) >= 1, args[1], "data/n300s50/a")
 x.ref = read.table(paste0(inpref, "_ref.pcs"))
 colnames(x.ref) = c("popu", "id", "PC1", "PC2")
-# x.ref = x.ref[order(x.ref$popu),]
 
 # get reference centers
 c.ref = aggregate(x.ref[,c("PC1", "PC2")], by = list(x.ref$popu), FUN = mean)
@@ -47,14 +46,13 @@ fun = function(popu){
 }
 nrep = 100
 msd.nulldist = sapply(1:nrep, function(x) mean(sapply(c.ref$popu, fun)))
-msd.nullmean = mean(msd.nulldist)
+print(c(mean(msd.nulldist), var(msd.nulldist)))
 
 msd.all = c(nrow(x.ref))
 png(paste0(inpref, ".png"), 2000, 2000)
 par(mfrow=c(2,2), cex=2)
 for(method in methods){
     x.stu = x.stu.all[[method]]
-    # x.stu = x.stu[order(x.stu$popu),]
 
     x.stu[,c("PC1", "PC2")] = as.matrix(x.stu[,c("PC1", "PC2")]) %*% rot
     c.stu = aggregate(x.stu[,c("PC1", "PC2")], by = list(x.stu$popu), FUN = mean)
@@ -79,9 +77,7 @@ for(method in methods){
     }
     msd = mean(rowSums((c.stu[,c("C1", "C2")] - c.ref[,c("C1", "C2")])^2))
     msd = round(msd, 3)
-    relmsd = msd / msd.nullmean
-    relmsd = round(relmsd, 3)
-    legend("bottomleft", legend=paste(c("abs.", "rel."), "MSD:", c(msd, relmsd)))
+    legend("bottomleft", legend=paste("MSD:", msd))
     msd.all = c(msd.all, msd)
 }
 dev.off()
