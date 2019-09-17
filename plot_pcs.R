@@ -46,7 +46,8 @@ fun = function(popu){
 }
 nrep = 100
 msd.nulldist = sapply(1:nrep, function(x) mean(sapply(c.ref$popu, fun)))
-print(c(mean(msd.nulldist), var(msd.nulldist)))
+msd.nullmean = round(mean(msd.nulldist), 3)
+msd.nullsd = round(sd(msd.nulldist), 3)
 
 msd.all = c(nrow(x.ref))
 png(paste0(inpref, ".png"), 2000, 2000)
@@ -74,6 +75,7 @@ for(method in methods){
         legend("bottomright", legend=des.ref, pch=1, col=(1:4)+1)
         des.stu = paste("Popu.", 1:4, "stu.")
         legend("topright", legend=des.stu, pch=(1:4)+stu.pch, col=1)
+        legend("bottom", legend=paste(c("null MSD mean:", "null MSD sd:"), c(msd.nullmean, msd.nullsd)))
     }
     msd = mean(rowSums((c.stu[,c("C1", "C2")] - c.ref[,c("C1", "C2")])^2))
     msd = round(msd, 3)
