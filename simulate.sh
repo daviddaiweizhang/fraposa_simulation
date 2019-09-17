@@ -3,13 +3,14 @@ set -e
 
 n=$1
 nstu=$2
-pref=$3
+thincount=$3
+pref=$4
 K=8
 k=2
 mkdir -p `dirname $pref`
 
 bash ggs.sh $n $pref.ggs
-bash ggs2plink.sh $pref.ggs $pref
+bash ggs2plink.sh $pref.ggs $pref $thincount
 bash splitrefstu.sh $pref $nstu
 bash fraposa.sh ${pref}_ref ${pref}_stu oadp ${pref}_oadp
 bash fraposa.sh ${pref}_ref ${pref}_stu ap ${pref}_ap
