@@ -10,4 +10,8 @@ G=1000 # number of independent genealogies
 let "C = $n * 2" # number of haplid samples per center
 ggs=~/ggs/ggs
 
-$ggs -K $K -c $C -M $M -G $G -L $L -o $outfile
+if [ -s "$outfile" ]; then
+    echo "using existing $outfile"
+else
+    $ggs -K $K -c $C -M $M -G $G -L $L -o $outfile
+fi
