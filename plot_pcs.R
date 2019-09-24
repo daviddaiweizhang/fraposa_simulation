@@ -1,15 +1,21 @@
 rm(list=ls())
 library(plotrix)
+set.seed(123)
 
 radius = 0.9
 methods = c("sp", "ap", "oadp", "adp")
 lim = c(-35, 35)
+num.pcs = 4
 
 # read reference samples
 args = commandArgs(trailingOnly=TRUE)
 inpref = ifelse(length(args) >= 1, args[1], "data/n300s50/a")
 x.ref = read.table(paste0(inpref, "_ref.pcs"))
 colnames(x.ref) = c("popu", "id", "PC1", "PC2")
+
+# read reference singular values
+s.ref = scan(paste0(inpref, "_ref_s.dat"))
+pc.contrib = round(s.ref[1:2]^2 / sum(s.ref^2), 4)
 
 # get reference centers
 c.ref = aggregate(x.ref[,c("PC1", "PC2")], by = list(x.ref$popu), FUN = mean)
@@ -59,9 +65,11 @@ for(method in methods){
     c.stu = aggregate(x.stu[,c("PC1", "PC2")], by = list(x.stu$popu), FUN = mean)
     colnames(c.stu) = c("popu", "C1", "C2")
     stu.pch = 14
-    main = paste0(method, ' (ref. size = ', nrow(x.ref), ')')
+    main = paste0(method, " with ref_size = ", nrow(x.ref), " (variation contributed from PC1-2: ", sum(pc.contrib), ")")
+    xlab = paste0("PC1 (contribution=", pc.contrib[1], ")")
+    ylab = paste0("PC2 (contribution=", pc.contrib[2], ")")
     col.ref = as.integer(x.ref$popu) + 1
-    plot(x.ref[,3:4], main=main, col=col.ref, xlim=lim, ylim=lim)
+    plot(x.ref[,3:4], main=main, col=col.ref, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab)
 
     pch.stu = as.integer(x.stu$popu) + stu.pch
     points(x.stu[,3:4], col=1, pch=pch.stu)
@@ -85,3 +93,28 @@ for(method in methods){
 dev.off()
 write(msd.all, paste0(inpref, "_msd"), ncolumns=length(msd.all), sep="\t")
 
+
+out.filename = paste0(inpref, "_scatter.png")
+print(out.filename)
+png(out.filename, 2000, 3000)
+pairs = cbind(c(4,4,4,3,3,2), c(3,2,1,2,1,1))
+par(mfrow=c(nrow(pairs), num.pcs), cex=2)
+for(i in 1:nrow(pairs)){
+    pair = pairs[i,]
+    method = c(methods[pair[1]], methods[pair[2]])
+    msd = mean(as.matrix(x.stu[[method[1]]][, pc.names] - x.stu[[method[2]]][, pc.names])^2)
+    msd = round(msd, 3)
+    print(paste(method[1], method[2], msd))
+    for(pc.name in pc.names){
+        a = x.stu[[method[1]]][[pc.name]]
+        b = x.stu[[method[2]]][[pc.name]]
+        xlab = paste(method[1], pc.name)
+        ylab = paste(method[2], pc.name)
+        main = paste("MSD:", msd)
+        plot(a, b, xlab=xlab, ylab=ylab, main=main)
+        abline(0,1)
+        abline(v=0)
+        abline(h=0)
+    }
+}
+dev.off()
