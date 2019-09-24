@@ -2,11 +2,22 @@
 set -e
 
 nstu=50
-msd=data/msd
-rm -f $msd
-for m in `seq 1000 500 3000`; do
-    let "n = $m / 4 + 50"
-    pref=data/n${n}s${nstu}/a
-    cat ${pref}_msd >> $msd
+
+for thincount in 0 50000 80000 90000; do
+    if [ "$thincount" == 0 ]; then
+        msd=data/msd
+    else
+        msd=data/msd_p${thincount}
+    fi
+    rm -r $msd
+    for nref in `seq 250 125 750`; do
+        let "n = $nref + $nstu"
+        if [ "$thincount" == 0 ]; then
+                pref=data/n${n}s${nstu}/a
+        else
+                pref=data/n${n}s${nstu}p${thincount}/a
+        fi
+        cat ${pref}_msd >> $msd
+    done
+    Rscript plot_trend.R $msd
 done
-Rscript plot_trend.R $msd
