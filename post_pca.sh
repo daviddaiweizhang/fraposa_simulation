@@ -3,7 +3,7 @@ set -e
 
 nstu=50
 
-for thincount in 0 50000 80000 90000; do
+for thincount in 0 10000 50000 80000; do
     if [ "$thincount" == 0 ]; then
         msd=data/msd
     else
