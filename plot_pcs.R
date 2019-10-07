@@ -5,7 +5,8 @@ set.seed(123)
 radius = 0.9
 methods = c("sp", "ap", "oadp", "adp")
 lim = c(-35, 35)
-num.pcs = 4
+num.pcs = 2
+pc.names = paste0("PC", c(1:num.pcs))
 
 # read reference samples
 args = commandArgs(trailingOnly=TRUE)
@@ -44,6 +45,7 @@ for(method in methods){
 nstu = sum(x.stu.all[[1]]$popu == c.ref$popu[1])
 
 # find the null distribution of MSD
+c.ref.scale = rowSums(as.matrix(c.ref[,c("C1", "C2")])^2)
 fun = function(popu){
     y = x.ref[x.ref$popu == popu,]
     y = y[sample(nrow(y), nstu),]
@@ -51,7 +53,7 @@ fun = function(popu){
     sum(d^2)
 }
 nrep = 100
-msd.nulldist = sapply(1:nrep, function(x) mean(sapply(c.ref$popu, fun)))
+msd.nulldist = sqrt(sapply(1:nrep, function(x) mean(sapply(c.ref$popu, fun) / c.ref.scale)))
 msd.nullmean = round(mean(msd.nulldist), 3)
 msd.nullsd = round(sd(msd.nulldist), 3)
 
@@ -85,7 +87,7 @@ for(method in methods){
         legend("topright", legend=des.stu, pch=(1:4)+stu.pch, col=1)
         legend("bottom", legend=paste(c("null MSD mean:", "null MSD sd:"), c(msd.nullmean, msd.nullsd)))
     }
-    msd = mean(rowSums((c.stu[,c("C1", "C2")] - c.ref[,c("C1", "C2")])^2))
+    msd = sqrt(mean(rowSums((c.stu[,c("C1", "C2")] - c.ref[,c("C1", "C2")])^2) / c.ref.scale))
     msd = round(msd, 3)
     legend("bottomleft", legend=paste("MSD:", msd))
     msd.all = c(msd.all, msd)
@@ -102,12 +104,12 @@ par(mfrow=c(nrow(pairs), num.pcs), cex=2)
 for(i in 1:nrow(pairs)){
     pair = pairs[i,]
     method = c(methods[pair[1]], methods[pair[2]])
-    msd = mean(as.matrix(x.stu[[method[1]]][, pc.names] - x.stu[[method[2]]][, pc.names])^2)
+    msd = mean(as.matrix(x.stu.all[[method[1]]][, pc.names] - x.stu.all[[method[2]]][, pc.names])^2)
     msd = round(msd, 3)
     print(paste(method[1], method[2], msd))
     for(pc.name in pc.names){
-        a = x.stu[[method[1]]][[pc.name]]
-        b = x.stu[[method[2]]][[pc.name]]
+        a = x.stu.all[[method[1]]][[pc.name]]
+        b = x.stu.all[[method[2]]][[pc.name]]
         xlab = paste(method[1], pc.name)
         ylab = paste(method[2], pc.name)
         main = paste("MSD:", msd)
