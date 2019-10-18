@@ -1,10 +1,5 @@
 #!/bin/bash
-set -3
+set -e
 
-p=$1
- for n in `seq 300 125 800`; do
-	 dname=data/n${n}s50p${p}
-	 mkdir -p $dname
-	 scp daiweiz@fantasia.sph.umich.edu:~/fraposa_simulation/$dname/*.pcs $dname
-	 Rscript plot_pcs.R $dname/a
- done 
+pat=$1
+rsync -am -e ssh --progress --include="$pat" --include='*/' --exclude='*' daiweiz@snowwhite.sph.umich.edu:~/fraposa_simulation/data/ data/
