@@ -98,7 +98,7 @@ write(msd.all, paste0(inpref, "_msd"), ncolumns=length(msd.all), sep="\t")
 
 out.filename = paste0(inpref, "_scatter.png")
 print(out.filename)
-png(out.filename, 2000, 3000)
+png(out.filename, 1000, 3000)
 pairs = cbind(c(4,4,4,3,3,2), c(3,2,1,2,1,1))
 par(mfrow=c(nrow(pairs), num.pcs), cex=2)
 for(i in 1:nrow(pairs)){
