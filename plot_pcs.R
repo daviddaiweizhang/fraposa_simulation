@@ -102,21 +102,25 @@ write(msd.all, paste0(inpref, "_msd"), ncolumns=length(msd.all), sep="\t")
 
 out.filename = paste0(inpref, "_scatter.png")
 print(out.filename)
-png(out.filename, 2000, 6000)
-pairs = cbind(c(4,4,4,3,3,2), c(3,2,1,2,1,1))
-par(mfrow=c(nrow(pairs), num.pcs), cex=2)
+png(out.filename, 3000, 4000)
+pairs = cbind(
+    c(4,3,4,3,4,2),
+    c(3,2,2,1,1,1))
+par(mfcol=c(num.pcs*2, nrow(pairs)/2), cex=3)
 for(i in 1:nrow(pairs)){
     pair = pairs[i,]
     method = c(methods[pair[1]], methods[pair[2]])
-    msd = mean(as.matrix(x.stu.all[[method[1]]][, pc.names] - x.stu.all[[method[2]]][, pc.names])^2)
+    msd = sqrt(mean(as.matrix(x.stu.all[[method[1]]][, pc.names] - x.stu.all[[method[2]]][, pc.names])^2))
     msd = round(msd, 3)
     print(paste(method[1], method[2], msd))
-    for(pc.name in pc.names){
+    for(j in 1:num.pcs){
+	pc.name = pc.names[j]
         a = x.stu.all[[method[1]]][[pc.name]]
         b = x.stu.all[[method[2]]][[pc.name]]
-        xlab = paste(method[1], pc.name)
-        ylab = paste(method[2], pc.name)
-        main = paste("MSD:", msd)
+        xlab = paste(toupper(method[1]), pc.name)
+        ylab = paste(toupper(method[2]), pc.name)
+	main = ""
+	if(j == 1) main = paste(toupper(method[1]), " vs ", toupper(method[2]), " (sqrtMSD: ", msd, ")")
         plot(a, b, xlab=xlab, ylab=ylab, main=main)
         abline(0,1)
         abline(v=0)
