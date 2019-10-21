@@ -15,10 +15,11 @@ for(i in 1:length(methods)){
     if(i == 1){
         xlab = "Reference size"
         ylab = "sqrtMSD"
-        plot(x$nref, x[[method]], type="b", col=i, ylim=ylim, xlab=xlab, ylab=ylab, lwd=lwd, cex=cex)
+	main = "Comparison of accuracy as reference size varies"
+        plot(x$nref, x[[method]], type="b", col=i, ylim=ylim, xlab=xlab, ylab=ylab, lwd=lwd, cex=cex, main=main)
     } else{
         points(x$nref, x[[method]], type="b", col=i, lwd=lwd, cex=cex)
     }
 }
-legend("topright", legend=methods, pch=1, lty=1, col=1:4)
+legend("topright", legend=toupper(methods), pch=1, lty=1, col=1:4)
 dev.off()
