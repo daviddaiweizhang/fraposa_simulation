@@ -1,13 +1,23 @@
 #!/bin/bash
 set -e
 
-n=$1
-
 nstu=50
 K=8
 k=2
-pref=data/n${n}s${nstu}/a
-time -p bash fraposa.sh ${pref}_ref ${pref}_stu oadp ${pref}_oadp
-time -p bash fraposa.sh ${pref}_ref ${pref}_stu ap ${pref}_ap
-time -p bash fraposa.sh ${pref}_ref ${pref}_stu sp ${pref}_sp
-time -p bash trace.sh ${pref}_ref ${pref}_stu $K $k ${pref}_adp ${pref}_ref
+
+for n in `seq 300 125 800`; do
+    base=data/n${n}s${nstu}
+    id=`date +%s.%N`
+    root=$base/tmp/$id
+    mkdir -p $root
+    cp $base/a_{ref,stu}.{bed,bim,fam} $root
+
+    rm -f $root/*.dat
+    time -p bash fraposa.sh $root/a_ref $root/a_stu sp $root/a_sp
+    rm -f $root/*.dat
+    time -p bash fraposa.sh $root/a_ref $root/a_stu ap $root/a_ap
+    rm -f $root/*.dat
+    time -p bash fraposa.sh $root/a_ref $root/a_stu oadp $root/a_oadp
+    rm -f $root/*.dat $root/*.coord
+    time -p bash trace.sh $root/a_ref $root/a_stu $K $k $root/a_adp $root/a_ref
+done
