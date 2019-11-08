@@ -3,3 +3,4 @@ logs
 sync*
 slurm.sh
 trace.conf
+old
