@@ -117,11 +117,12 @@ for(i in 1:nrow(pairs)){
 	pc.name = pc.names[j]
         a = x.stu.all[[method[1]]][[pc.name]]
         b = x.stu.all[[method[2]]][[pc.name]]
+        lim = c(min(a, b), max(a, b))
         xlab = paste(toupper(method[1]), pc.name)
         ylab = paste(toupper(method[2]), pc.name)
 	main = ""
 	if(j == 1) main = paste(toupper(method[1]), " vs ", toupper(method[2]), " (sqrtMSD: ", msd, ")")
-        plot(a, b, xlab=xlab, ylab=ylab, main=main)
+        plot(a, b, xlab=xlab, ylab=ylab, main=main, xlim=lim, ylim=lim)
         abline(0,1)
         abline(v=0)
         abline(h=0)
